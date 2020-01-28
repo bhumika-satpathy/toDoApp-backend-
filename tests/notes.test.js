@@ -1,7 +1,7 @@
-const handlers = require('../../src/handlers/fileOperations');
-const readWriteFiles = require('../../src/utils/readWriteFiles');
+const handlers = require('../src/handlers/fileOperations');
+const readWriteFiles = require('../src/utils/readWriteFiles');
 
-describe('The handler function ', () => {
+describe('The get handler function ', () => {
   it('should invoke the readFile method', () => {
     const mockH = {
       response: () => {},
@@ -11,3 +11,20 @@ describe('The handler function ', () => {
     expect(mockRead).toHaveBeenCalled();
   });
 });
+
+describe('The post handler function ',()=>{
+    it('should invoke the writeFile method',async()=>{
+        const mockH={
+            response:(res)=>{}
+        }
+        const mockReq={
+            payload:{
+                title:"one",
+                description:"More Work"
+            }
+        }
+        const mockWrite=jest.spyOn(readWriteFiles,'writeJson');
+        await handlers.postHandler(mockReq,mockH);
+        expect(mockWrite).toHaveBeenCalled();
+    })
+})

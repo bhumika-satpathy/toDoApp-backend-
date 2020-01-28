@@ -6,4 +6,21 @@ const getHandler = async (request, h) => {
   return h.response(readData);
 };
 
-module.exports={getHandler};
+const postHandler = async (request, h) => {
+  try {
+    const existingNotes = await operation.readJson();
+    const note = request.payload;
+
+    note.id = uuid();
+    note.isActive = 1;
+
+    existingNotes.notes = [...existingNotes.notes, note];
+    operation.writeJson(JSON.stringify(existingNotes));
+    return h.response('Note Added');
+  } catch (err) {
+    return h.response(err.message);
+  }
+};
+
+
+module.exports={getHandler,postHandler};
