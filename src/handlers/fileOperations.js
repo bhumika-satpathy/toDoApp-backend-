@@ -22,5 +22,16 @@ const postHandler = async (request, h) => {
   }
 };
 
+const deleteHandler=async(req,h)=>{
+  try{
+    const notesJson=await operation.readJson();
+    const deleteId=req.params.id;
+    notesJson.notes=notesJson.notes.filter((note)=>note.id!==deleteId)
+    operation.writeJson(JSON.stringify(notesJson));
+    return h.response('Note Deleted!')
+  }catch(err){
+    return h.response(err.message);
+  }
+}
 
-module.exports={getHandler,postHandler};
+module.exports={getHandler,postHandler, deleteHandler};
