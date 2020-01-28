@@ -1,5 +1,6 @@
 const uuid = require('uuid/v4');
 const operation = require('../utils/readWriteFiles.js');
+const axios=require('axios').default
 
 const getHandler = async (request, h) => {
   const readData = await operation.readJson();
@@ -34,4 +35,29 @@ const deleteHandler=async(req,h)=>{
   }
 }
 
-module.exports={getHandler,postHandler, deleteHandler};
+const changeStateHandler = async (request, h) => {
+  try {
+    const notesJson = await operation.readJson();
+    const noteId = request.params.id;
+    let id = 0;
+    notesJson.notes.forEach((element) => {
+      if (element.id === noteId) {
+        notesJson.notes[id].active = !notesJson.notes[id].active;
+        return;
+      }
+      id += 1;
+    });
+    operation.writeJson(JSON.stringify(notesJson));
+    return h.response('State changed');
+  } catch (err) {
+    return h.response(err.message);
+  }
+};
+
+const getQuotesHandler=async(req,h)=>{
+  const jsonResponse=await axios.get('http://api.quotable.io/random');
+  const jsonData=jsonResponse.data;
+  return `${jsonData.content} By ${jsonData.author}`;
+}
+
+module.exports={getHandler,postHandler, deleteHandler, changeStateHandler,getQuotesHandler};

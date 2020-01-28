@@ -1,5 +1,6 @@
 const handlers = require('../src/handlers/fileOperations');
 const readWriteFiles = require('../src/utils/readWriteFiles');
+const axios = require('axios').default;
 
 describe('The get handler function ', () => {
   it('should invoke the readFile method', () => {
@@ -45,3 +46,33 @@ describe('The delete handler function',()=>{
         done();
     })
 })
+
+describe('The change state handler ', () =>{
+    it('Should call writeJson', async (done) => {
+      const mockReq = {
+        params: {
+          id: '69bdeb20-596e-4abd-985b-82dff67696f6',
+        },
+      };
+      const mockH = {
+        response: (res) => {},
+      };
+      const mockWrite = jest.spyOn(readWriteFiles, 'writeJson');
+      await handlers.postHandler(mockReq, mockH);
+      expect(mockWrite).toHaveBeenCalled();
+      done();
+    });
+  });
+
+  describe('The get quotes handler', () => {
+    it('should return an object', () => {
+      const result = handlers.getQuotesHandler();
+      expect(result).toBeInstanceOf(Object);
+    });
+    it('should call axiom.get', (done) => {
+      const mockRandom = jest.spyOn(axios, 'get');
+      handlers.getQuotesHandler();
+      expect(mockRandom).toHaveBeenCalled();
+      done();
+    });
+  });
